@@ -18,15 +18,18 @@ public class Player : MonoBehaviour
     [SerializeField]
     float groundTestRadius;
 
+    PlayerUI playerUI;
     Rigidbody2D rb;
     Vector2 moveAxis;
     bool doJump;
     InputAction move;
     InputAction jump;
+    int coins = 0;
 
     // Esto se ejecuta al crear el objeto
     void Start()
     {
+        playerUI = GetComponent<PlayerUI>();
         rb = GetComponent<Rigidbody2D>();
         move = InputSystem.actions.FindAction("Move");
         jump = InputSystem.actions.FindAction("Jump");
@@ -66,10 +69,14 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GameObject moneda = collision.gameObject.transform.parent.gameObject;
-        if (moneda.tag == "Coin")
+        if (collision.gameObject.tag == "Coin")
         {
+            // obtenemos el objeto moneda y los destruimos
+            GameObject moneda = collision.gameObject.transform.parent.gameObject;
             Destroy(moneda);
+            // aumentamos el contador de monedas
+            coins++;
+            playerUI.ActualizarContadorDeMonedas(coins);
         }
     }
 
